@@ -14,6 +14,13 @@ package me.lins.airman.gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import javax.annotation.PostConstruct;
 import javax.swing.JComponent;
@@ -35,10 +42,61 @@ public class FlightsMapView extends JComponent implements TileLoadingObserver {
     private int[] centerTileNumbers = new int[]{1,1,1,1};
     private Image loadingImg;
     private int zoom = 2;
+    
+    private Point lastMouseDragPoint;
+    private float scrollPosX = 53.0f, scrollPosY = 8.0f;
 
     @PostConstruct
     protected void initLayout() {
         setSize(640, 480);
+        
+        // Add listener for mouse drag listeners
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                lastMouseDragPoint = e.getPoint();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+        addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                int dx = e.getPoint().x - lastMouseDragPoint.x;
+                int dy = e.getPoint().y - lastMouseDragPoint.y;
+                shiftPixel(dx, dy, true);
+                lastMouseDragPoint = e.getPoint();
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                
+            }
+        });
+        addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                if (e.getWheelRotation() < 0) {
+                    zoomIn(e.getX(), e.getY());
+                } else {
+                    zoomOut(e.getX(), e.getY());
+                }
+            }
+        });
     }
     
     /**
@@ -79,8 +137,24 @@ public class FlightsMapView extends JComponent implements TileLoadingObserver {
                                                          // center
             int offY = -tileNumbers[3] + getHeight() / 2; // of the screen
 
-            System.out.println(offX + " " + offY);
-
+            int numTilesX = getWidth() / 256;
+            int numTilesY = getHeight() / 256;
+            
+            for (int x = tileNumbers[0] - numTilesX; x <= tileNumbers[0] + numTilesX; x++) {
+                if (x < 0)
+                    continue;
+                for (int y = tileNumbers[1] - numTilesY; y <= tileNumbers[1] + numTilesY; y++) {
+                    if (y < 0)
+                        continue;
+                    
+                    int dox = (x - tileNumbers[0]) * 256;
+                    int doy = (y - tileNumbers[1]) * 256;
+                    drawImage(g, x, y, offX + dox, offY + doy);
+                }
+            }
+            
+            //System.out.println(offX + " " + offY);
+/*
             // Draw center image
             drawImage(g, tileNumbers[0], tileNumbers[1], offX, offY);
 
@@ -106,7 +180,7 @@ public class FlightsMapView extends JComponent implements TileLoadingObserver {
             drawImage(g, tileNumbers[0] + 1, tileNumbers[1] - 1, offX + 256, offY - 256);
 
             // Draw right image below
-            drawImage(g, tileNumbers[0] + 1, tileNumbers[1] + 1, offX + 256, offY + 256);
+            drawImage(g, tileNumbers[0] + 1, tileNumbers[1] + 1, offX + 256, offY + 256);*/
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -126,7 +200,8 @@ public class FlightsMapView extends JComponent implements TileLoadingObserver {
     @Override
     public void tileLoaded(Image img, int zoom, int x, int y, int mapSource, byte[] raw) {
         if (img != null) {
-            repaint();
+            repaint(); // If there is a bug with the loading/saving into MemoryTileCache
+            // this causes flickering
         }
     }
 
@@ -138,7 +213,7 @@ public class FlightsMapView extends JComponent implements TileLoadingObserver {
             shiftPixel(dx, dy, false);
 
             zoom++;
-            //centerTileNumbers = Math2.tileNumbers(scrollPos.getX(), scrollPos.getY(), zoom);
+            centerTileNumbers = Math2.tileNumbers(scrollPosX, scrollPosY, zoom);
             repaint();
         } else if (dx != 0 || dy != 0) {
             shiftPixel(dx, dy);
@@ -153,7 +228,7 @@ public class FlightsMapView extends JComponent implements TileLoadingObserver {
             shiftPixel(dx, dy, false);
 
             zoom--;
-            //centerTileNumbers = Math2.tileNumbers(scrollPos.getX(), scrollPos.getY(), zoom);
+            centerTileNumbers = Math2.tileNumbers(scrollPosX, scrollPosY, zoom);
             repaint();
         } else if (dx != 0 || dy != 0) {
             shiftPixel(dx, dy);
@@ -169,17 +244,19 @@ public class FlightsMapView extends JComponent implements TileLoadingObserver {
      * 
      * @param dx
      * @param dy
+     * @param repaint
      */
     protected void shiftPixel(int dx, int dy, boolean repaint) {
         if (dx == 0 && dy == 0) {
             return;
         }
 
-        /*float[] rpp = Math2.radPerPixel(zoom);
-        this.scrollPos.shift(rpp[0] * -dx, rpp[1] * dy);
-        centerTileNumbers = Math2.tileNumbers(scrollPos.getX(), scrollPos.getY(), zoom);
+        float[] rpp = Math2.radPerPixel(zoom);
+        scrollPosX += rpp[0] * -dx;
+        scrollPosY += rpp[1] * dy;
+        centerTileNumbers = Math2.tileNumbers(scrollPosX, scrollPosY, zoom);
         if (repaint) {
             repaint();
-        }*/
+        }
     }
 }

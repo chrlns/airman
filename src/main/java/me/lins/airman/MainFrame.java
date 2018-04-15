@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import me.lins.airman.gui.DebugWindow;
 import me.lins.airman.gui.FlightsMapView;
 import me.lins.airman.gui.FlightsMapWindow;
 import me.lins.airman.gui.TimeControlWindow;
@@ -28,14 +29,18 @@ public class MainFrame extends JFrame {
     @Autowired
     private FlightsMapWindow flightsMapWindow;
     
+    @Autowired
+    private DebugWindow debugWindow;
+    
     @PostConstruct
     protected void init() {
         setTitle("Airline Manager");
-        setSize(1024, 768);
+        setSize(1600, 1000);
         
         JDesktopPane desktop = new JDesktopPane();
         setContentPane(desktop);
         desktop.add(timeControlWindow);
         desktop.add(flightsMapWindow);
+        desktop.add(debugWindow);
     }
 }
