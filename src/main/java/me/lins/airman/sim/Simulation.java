@@ -5,17 +5,16 @@
  */
 package me.lins.airman.sim;
 
-import java.time.Duration;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.stereotype.Component;
 
 /**
  * A simulated world.
  * @author chris
  */
-@Component
 @EnableAsync
 public class Simulation {
     private List<Aircraft> aircrafts;
@@ -23,7 +22,17 @@ public class Simulation {
     private boolean isRunning = true;
     
     // How many (simulation) seconds will elapse per tick (= realtime second)?
-    private int secondsPerTick = 1; 
+    private int secondsPerTick = 1;
+    
+    private ZonedDateTime dateTime;
+    
+    public Simulation(int startYear) {
+        dateTime = ZonedDateTime.of(startYear, 1, 1, 0, 0, 0, 0, ZoneId.of("GMT"));
+    }
+    
+    public ZonedDateTime getDateTime() {
+        return dateTime;
+    }
     
     @Async
     public void run() {
@@ -34,6 +43,8 @@ public class Simulation {
                 for (int n = 0; n < secondsPerTick; n++) {
                     tick();
                 }
+                
+                dateTime = dateTime.plusSeconds(secondsPerTick);
 
                 long now = System.currentTimeMillis();
 

@@ -6,6 +6,8 @@
  */
 package me.lins.airman;
 
+import me.lins.airman.sim.Simulation;
+import me.lins.airman.sim.SimulationFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,5 +26,9 @@ public class App {
         
         MainFrame mf = context.getBean(MainFrame.class);
         mf.setVisible(true);
+        
+        SimulationFactory simFac = context.getBean(SimulationFactory.class);
+        Simulation sim = simFac.create(1909);
+        sim.run();
     }
 }

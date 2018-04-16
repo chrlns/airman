@@ -1,9 +1,4 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/*
  *  Airline Manager
  *  
  *  Copyright (C) 2010-2018 by Christian Lins <christian@lins.me>
@@ -20,7 +15,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.geom.Point2D;
 import java.io.IOException;
 import javax.annotation.PostConstruct;
 import javax.swing.JComponent;
@@ -41,7 +35,7 @@ public class FlightsMapView extends JComponent implements TileLoadingObserver {
     
     private int[] centerTileNumbers = new int[]{1,1,1,1};
     private Image loadingImg;
-    private int zoom = 2;
+    private int zoom = 5;
     
     private Point lastMouseDragPoint;
     private float scrollPosX = 53.0f, scrollPosY = 8.0f;
@@ -54,6 +48,9 @@ public class FlightsMapView extends JComponent implements TileLoadingObserver {
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() > 1) {
+                    zoomIn(e.getX(), e.getY());
+                }
             }
 
             @Override
