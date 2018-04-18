@@ -22,7 +22,7 @@ public class FlightsMapWindow extends GameWindow {
     @PostConstruct
     protected void initLayout() {
         setTitle("Flights Map");
-        setSize(640, 480);
+        setSize(800, 600);
         setContentPane(flightsMapView);
     }
 }

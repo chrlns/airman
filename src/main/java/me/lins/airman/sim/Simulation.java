@@ -7,6 +7,7 @@ package me.lins.airman.sim;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -17,7 +18,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @EnableAsync
 public class Simulation {
-    private List<Aircraft> aircrafts;
+    private List<Aircraft> aircrafts = new ArrayList<>();
     
     private boolean isRunning = true;
     
@@ -32,6 +33,22 @@ public class Simulation {
     
     public ZonedDateTime getDateTime() {
         return dateTime;
+    }
+    
+    public void increaseTimeSpeed() {
+        secondsPerTick *= 2;
+    }
+    
+    public void decreaseTimeSpeed() {
+        if (secondsPerTick > 1) {
+            secondsPerTick /= 2;
+        }
+    }
+    
+    public void fillWithTestData() {
+        Aircraft ac = new Aircraft();
+        ac.setSpeed(800);
+        
     }
     
     @Async

@@ -5,10 +5,24 @@
  */
 package me.lins.airman.sim;
 
+import java.util.List;
+
 /**
  *
  * @author chris
  */
 public class Aircraft {
+    private EarthPosition position;
+    private List<EarthPosition> route;
     
+    // Speed in km/h
+    private float speed;
+    
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+    
+    public void setPosition(EarthPosition position) {
+        this.position = position;
+    }
 }

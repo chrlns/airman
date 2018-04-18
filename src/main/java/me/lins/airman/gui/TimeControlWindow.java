@@ -27,7 +27,9 @@ public class TimeControlWindow extends GameWindow {
     @Autowired
     private SimulationFactory simFactory;
     
-    private JLabel timeLabel = new JLabel();
+    private final JLabel lblTime = new JLabel();
+    private final JButton btnFaster = new JButton(">>");
+    private final JButton btnSlower = new JButton("<");
     
     @PostConstruct
     protected void init() {       
@@ -37,12 +39,9 @@ public class TimeControlWindow extends GameWindow {
         
         initLayout();
         
-        ActionListener updater = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                timeLabel.setText(simFactory.current().getDateTime()
-                        .format(DateTimeFormatter.ISO_DATE_TIME));
-            }
+        ActionListener updater = (ActionEvent e) -> {
+            lblTime.setText(simFactory.current().getDateTime()
+                    .format(DateTimeFormatter.RFC_1123_DATE_TIME));
         };
         Timer timer = new Timer(1000, updater);
         timer.start();
@@ -50,10 +49,17 @@ public class TimeControlWindow extends GameWindow {
     
     private void initLayout() {
         getContentPane().setLayout(new FlowLayout());
-        getContentPane().add(timeLabel);
-        getContentPane().add(new JButton("||"));
-        getContentPane().add(new JButton(">"));
-        getContentPane().add(new JButton(">>"));
-        setSize(320, 70);
+        getContentPane().add(lblTime);
+        getContentPane().add(btnSlower);
+        getContentPane().add(btnFaster);
+        setSize(350, 70);
+        
+        btnSlower.addActionListener((ActionEvent e) -> {
+            simFactory.current().decreaseTimeSpeed();
+        });
+        
+        btnFaster.addActionListener((ActionEvent e) -> {
+            simFactory.current().increaseTimeSpeed();
+        });
     }
 }

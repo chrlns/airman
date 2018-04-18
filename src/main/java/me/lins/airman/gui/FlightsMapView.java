@@ -149,35 +149,6 @@ public class FlightsMapView extends JComponent implements TileLoadingObserver {
                     drawImage(g, x, y, offX + dox, offY + doy);
                 }
             }
-            
-            //System.out.println(offX + " " + offY);
-/*
-            // Draw center image
-            drawImage(g, tileNumbers[0], tileNumbers[1], offX, offY);
-
-            // Draw image above
-            drawImage(g, tileNumbers[0], tileNumbers[1] - 1, offX, offY - 256);
-
-            // Draw image below
-            drawImage(g, tileNumbers[0], tileNumbers[1] + 1, offX, offY + 256);
-
-            // Draw left center image
-            drawImage(g, tileNumbers[0] - 1, tileNumbers[1], offX - 256, offY);
-
-            // Draw left image above
-            drawImage(g, tileNumbers[0] - 1, tileNumbers[1] - 1, offX - 256, offY - 256);
-
-            // Draw left image below
-            drawImage(g, tileNumbers[0] - 1, tileNumbers[1] + 1, offX - 256, offY + 256);
-
-            // Draw right center image
-            drawImage(g, tileNumbers[0] + 1, tileNumbers[1], offX + 256, offY);
-
-            // Draw right image above
-            drawImage(g, tileNumbers[0] + 1, tileNumbers[1] - 1, offX + 256, offY - 256);
-
-            // Draw right image below
-            drawImage(g, tileNumbers[0] + 1, tileNumbers[1] + 1, offX + 256, offY + 256);*/
         } catch (Exception ex) {
             ex.printStackTrace();
         }
