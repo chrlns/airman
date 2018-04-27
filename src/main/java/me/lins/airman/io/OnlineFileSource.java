@@ -7,6 +7,7 @@
 package me.lins.airman.io;
 
 import java.awt.Image;
+import java.util.List;
 import java.util.Vector;
 import javax.imageio.ImageIO;
 import org.apache.http.client.fluent.Content;
@@ -36,7 +37,7 @@ class OnlineFileSource implements TileCache {
     }
 
     @Override
-    public Image loadImage(int zoom, int x, int y, int mapSource, boolean goDown, Vector obs) {
+    public Image loadImage(int zoom, int x, int y, int mapSource, boolean goDown) {
         if (y < 0) {
             return null;
         }
@@ -48,14 +49,6 @@ class OnlineFileSource implements TileCache {
             String agent = "Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0";
             Content content = Request.Get(url).userAgent(agent).execute().returnContent();
             Image img = ImageIO.read(content.asStream());
-
-            // Notify observer
-            if (obs != null) {
-                for (int n = 0, os = obs.size(); n < os; n++) {
-                    TileLoadingObserver observer = (TileLoadingObserver) obs.elementAt(n);
-                    observer.tileLoaded(img, zoom, x, y, mapSource, content.asBytes());
-                }
-            }
 
             return img;
         } catch (Exception ex) {

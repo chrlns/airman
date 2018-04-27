@@ -36,7 +36,7 @@ public class TileCacheManager {
     }
 
     public Image loadImage(int zoom, int x, int y, int mapSource, TileLoadingObserver obs) {
-        Image img = memoryTileCache.loadImage(zoom, x, y, mapSource, false, null);
+        Image img = memoryTileCache.loadImage(zoom, x, y, mapSource, false);
         if (img == null && obs != null) {
             TileLoadingTask task = new TileLoadingTask(zoom, x, y, mapSource, memoryTileCache, obs);
             loader.addTask(task);

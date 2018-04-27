@@ -7,6 +7,7 @@
 package me.lins.airman.io;
 
 import java.awt.Image;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -32,8 +33,10 @@ public interface TileCache {
      * @param y
      * @param mapSource
      * @param goDown
+     * @param observer
+     * @return 
      */
-    Image loadImage(int zoom, int x, int y, int mapSource, boolean goDown, Vector observer);
+    Image loadImage(int zoom, int x, int y, int mapSource, boolean goDown);
 
     void shutdown();
 }

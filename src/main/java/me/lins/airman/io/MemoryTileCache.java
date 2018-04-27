@@ -7,8 +7,8 @@
 package me.lins.airman.io;
 
 import java.awt.Image;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Cache working on volatile memory.
@@ -17,9 +17,8 @@ import java.util.Vector;
  */
 class MemoryTileCache implements TileCache {
 
-    private final int       cacheSize = 54;
-    private final Hashtable tiles     = new Hashtable(cacheSize);
-    private Vector          keys      = new Vector(cacheSize);
+    private final int       cacheSize = 256;
+    private final HashMap<String, Image> tiles     = new HashMap<>(cacheSize);
     private final TileCache successor;
 
     public MemoryTileCache(TileCache successor) {
@@ -29,23 +28,23 @@ class MemoryTileCache implements TileCache {
     private void addToMemoryCache(String url, Image img) {
         if (img != null && url != null) {
             tiles.put(url, img);
-            keys.addElement(url);
-            trimCache();
+            if (tiles.size() > cacheSize)
+                trimCache();
         }
     }
 
     void freeCache() {
         tiles.clear();
-        keys = new Vector(cacheSize);
     }
 
     private void trimCache() {
-        while (tiles.size() >= cacheSize) {
-            tiles.remove(keys.firstElement());
-            keys.removeElementAt(0);
-        }
+        Random rnd = new Random();
+        tiles.entrySet().stream()
+                .filter((e) -> (rnd.nextBoolean()))
+                .forEach(tiles.entrySet()::remove);
     }
 
+    @Override
     public boolean initialize() {
         this.successor.initialize();
         return true;
@@ -60,7 +59,7 @@ class MemoryTileCache implements TileCache {
     }
 
     @Override
-    public Image loadImage(int zoom, int x, int y, int mapSource, boolean goDown, Vector obs) {
+    public Image loadImage(int zoom, int x, int y, int mapSource, boolean goDown) {
         // Hopefully efficiently build the key string
         StringBuilder str = new StringBuilder();
         str.append(mapSource);
@@ -73,9 +72,10 @@ class MemoryTileCache implements TileCache {
         String key = str.toString();
 
         if (tiles.containsKey(key)) {
-            return (Image) tiles.get(key);
+            System.out.println("Memory cache hit: " + key);
+            return tiles.get(key);
         } else if (goDown) {
-            Image img = this.successor.loadImage(zoom, x, y, mapSource, goDown, obs);
+            Image img = this.successor.loadImage(zoom, x, y, mapSource, goDown);
             if (img != null) {
                 addToMemoryCache(key, img);
             }
@@ -85,6 +85,7 @@ class MemoryTileCache implements TileCache {
         }
     }
 
+    @Override
     public void shutdown() {
         this.successor.shutdown();
     }

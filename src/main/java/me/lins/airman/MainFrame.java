@@ -34,6 +34,7 @@ public class MainFrame extends JFrame {
     protected void init() {
         setTitle("Airline Manager");
         setSize(1600, 900);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         JDesktopPane desktop = new JDesktopPane();
         setContentPane(desktop);

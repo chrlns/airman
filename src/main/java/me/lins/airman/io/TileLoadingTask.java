@@ -43,7 +43,7 @@ public class TileLoadingTask implements Runnable {
 
     public void run() {
         try {
-            Image img = this.cache.loadImage(zoom, x, y, mapSource, true, null);
+            Image img = this.cache.loadImage(zoom, x, y, mapSource, true);
             this.observer.tileLoaded(img, zoom, x, y, mapSource, null);
         } catch (Throwable ex) {
             ex.printStackTrace();

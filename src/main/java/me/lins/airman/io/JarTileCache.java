@@ -10,6 +10,7 @@ import java.awt.Image;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -38,7 +39,8 @@ public class JarTileCache implements TileCache {
         return true;
     }
 
-    public Image loadImage(int zoom, int x, int y, int mapSource, boolean goDown, Vector observer) {
+    @Override
+    public Image loadImage(int zoom, int x, int y, int mapSource, boolean goDown) {
         if (y < 0) {
             return null;
         }
@@ -51,12 +53,13 @@ public class JarTileCache implements TileCache {
         } catch (IOException e) {
             System.err.println("IOException in JarTileCache.loadImage(): " + e.getMessage());
             if (goDown) {
-                return this.successor.loadImage(zoom, x, y, mapSource, goDown, observer);
+                return this.successor.loadImage(zoom, x, y, mapSource, goDown);
             }
             return null;
         }
     }
 
+    @Override
     public void shutdown() {
         // Do nothing
     }
