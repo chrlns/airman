@@ -29,7 +29,10 @@ public class TileCacheManager {
 
     @PostConstruct
     public void initialize() {
-        memoryTileCache = new MemoryTileCache(new JarTileCache(new OnlineFileSource()));
+        memoryTileCache = new MemoryTileCache(
+                new JarTileCache(
+                        new FileTileCache(
+                                new OnlineFileSource())));
         memoryTileCache.initialize();
         loader = new TileLoader();
         loader.start();
