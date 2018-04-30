@@ -18,6 +18,10 @@ public class Aircraft {
     // Speed in km/h
     private float speed;
     
+    public EarthPosition getPosition() {
+        return position;
+    }
+    
     public void setSpeed(float speed) {
         this.speed = speed;
     }

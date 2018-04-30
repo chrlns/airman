@@ -28,7 +28,8 @@ public class App {
         mf.setVisible(true);
         
         SimulationFactory simFac = context.getBean(SimulationFactory.class);
-        Simulation sim = simFac.create(1909);
+        Simulation sim = simFac.create(1950);
+        sim.fillWithTestData();
         sim.run();
     }
 }

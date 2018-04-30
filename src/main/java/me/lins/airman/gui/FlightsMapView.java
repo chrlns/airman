@@ -20,6 +20,9 @@ import javax.annotation.PostConstruct;
 import javax.swing.JComponent;
 import me.lins.airman.io.TileCacheManager;
 import me.lins.airman.io.TileLoadingObserver;
+import me.lins.airman.sim.Aircraft;
+import me.lins.airman.sim.Simulation;
+import me.lins.airman.sim.SimulationFactory;
 import me.lins.airman.util.Math2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,6 +35,9 @@ import org.springframework.stereotype.Component;
 public class FlightsMapView extends JComponent implements TileLoadingObserver {
     @Autowired
     private TileCacheManager tcm;
+    
+    @Autowired
+    private SimulationFactory simFac;
     
     private int[] centerTileNumbers = new int[]{1,1,1,1};
     private Image loadingImg;
@@ -128,6 +134,7 @@ public class FlightsMapView extends JComponent implements TileLoadingObserver {
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
         try {
+            // Draw map tiles
             int[] tileNumbers = centerTileNumbers;
             int offX = -tileNumbers[2] + getWidth() / 2; // We want to transform
                                                          // the origin to the
@@ -149,12 +156,23 @@ public class FlightsMapView extends JComponent implements TileLoadingObserver {
                     drawImage(g, x, y, offX + dox, offY + doy);
                 }
             }
+            
+            // Draw the aircrafts
+            Simulation sim = simFac.current();
+            if (sim != null) {
+                for (Aircraft aircraft : sim.getAircrafts()) {
+                    int[] pos = posOnScreen(aircraft.getPosition().getLatitude(), 
+                                            aircraft.getPosition().getLongitude());
+                    g.setColor(Color.BLUE);
+                    g.fillOval(pos[0], pos[1], 10, 10);
+                }
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    private int[] posOnScreen(float lon, float lat) {
+    private int[] posOnScreen(float lat, float lon) {
         int[] tileNumbers = centerTileNumbers;
         int offX = -tileNumbers[2] + getWidth() / 2; // We want to transform the
                                                      // origin to the center

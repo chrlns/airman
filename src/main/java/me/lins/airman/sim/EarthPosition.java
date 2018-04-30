@@ -12,6 +12,11 @@ package me.lins.airman.sim;
 public class EarthPosition {
     private float lat, lon;
     
+    public EarthPosition(float lat, float lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
+    
     public float getLatitude() {
         return lat;
     }

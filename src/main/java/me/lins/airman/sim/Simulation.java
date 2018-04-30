@@ -18,7 +18,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @EnableAsync
 public class Simulation {
-    private List<Aircraft> aircrafts = new ArrayList<>();
+    private final List<Aircraft> aircrafts = new ArrayList<>();
     
     private boolean isRunning = true;
     
@@ -29,6 +29,10 @@ public class Simulation {
     
     public Simulation(int startYear) {
         dateTime = ZonedDateTime.of(startYear, 1, 1, 0, 0, 0, 0, ZoneId.of("GMT"));
+    }
+    
+    public List<Aircraft> getAircrafts() {
+        return aircrafts;
     }
     
     public ZonedDateTime getDateTime() {
@@ -48,7 +52,8 @@ public class Simulation {
     public void fillWithTestData() {
         Aircraft ac = new Aircraft();
         ac.setSpeed(800);
-        
+        ac.setPosition(new EarthPosition(52.0f, 13.0f));
+        aircrafts.add(ac);
     }
     
     @Async
