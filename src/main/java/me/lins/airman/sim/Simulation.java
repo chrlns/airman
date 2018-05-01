@@ -78,11 +78,19 @@ public class Simulation {
         }
     }
     
+    protected void tickAircrafts() {
+        for (Aircraft aircraft : aircrafts) {
+            // Calculate new position of the aircraft
+            
+        }
+    }
+    
     /**
      * Do all the simulation work here.
      */
     protected void tick() {
         // Let all the aircrafts start, fly, and land
+        tickAircrafts();
         
         // Let the passengers do some booking
         

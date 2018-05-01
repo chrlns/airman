@@ -18,6 +18,9 @@ public class Aircraft {
     // Speed in km/h
     private float speed;
     
+    // Heading in relation to north
+    private float heading;
+    
     public EarthPosition getPosition() {
         return position;
     }
